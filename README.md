@@ -1,6 +1,4 @@
-# vapo
-
-> vapo mobile app store implementation
+# vue-mobx-template
 
 ## Build Setup
 
