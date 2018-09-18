@@ -1,29 +1,36 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <p>count: {{count}}</p>
-    <p @click="changeCount">Update</p>
+    <Messaging />
   </div>
 </template>
 
 <script>
-import testModel from './stores/TestStore'
+import Messaging from './features/Messaging'
 
 export default {
   name: 'App',
-  fromMobx: {
-    testModel
-  }
+  components: { Messaging }
 }
 </script>
 
 <style>
+html, body {
+  padding: 0;
+  margin: 0;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-gap: 30px;
+  background: #EEE;
+}
+#app > * {
+  background: white;
+  padding: 0 15px;
 }
 </style>
