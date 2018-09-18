@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h5 class="sticky-header" >Messaging Store</h5>
+    <h5 class="sticky-header" >Bid Store</h5>
   
-    <button @click="store.fetchThreads()" >Fetch threads</button>
+    <button @click="store.fetchBids()" >Fetch bids</button>
     <vue-json-pretty
       :data="JSON.parse(JSON.stringify(store))"
       showLength
@@ -12,17 +12,13 @@
       :pathSelectable="pathSelectable"
     />
 
-    <div v-if="!!thread" >
+    <div v-if="!!bid" >
       <hr>
-      <p>Selected Thread</p>
-      <button @click="thread.fetchMessages()" >Refresh thread</button>
-      <input
-        v-model="newMessage"
-        placeholder="Press enter to send msg"
-        @keyup.enter="onSendMessage()"
-      />
+      <p>Selected Bid</p>
+      <button @click="bid.fetchResponses()" >Refresh</button>
+      <button @click="remove(bid)" >Remove</button>
       <vue-json-pretty
-        :data="JSON.parse(JSON.stringify(thread))"
+        :data="JSON.parse(JSON.stringify(bid))"
         showLength
         :deep="1"
       />
@@ -34,7 +30,7 @@
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Observer } from 'mobx-vue'
-import MessagingStore from '../stores/MessagingStore'
+import BidStore from '../stores/BidStore'
 import VueJsonPretty from 'vue-json-pretty'
 
 @Observer
@@ -43,16 +39,15 @@ import VueJsonPretty from 'vue-json-pretty'
     VueJsonPretty
   }
 })
-export default class Messaging extends Vue {
-  store = MessagingStore
-  thread = null
-  newMessage = ''
+export default class Biding extends Vue {
+  store = BidStore
+  bid = null
 
   handleClick(path) {
     let pathSplit = path.split('[')
     pathSplit = pathSplit[1].split(']')
     const threadIndex = parseInt(pathSplit[0])
-    this.thread = this.store.threads[threadIndex]
+    this.bid = this.store.bids[threadIndex]
   }
 
   pathSelectable(path, data) {
@@ -62,10 +57,9 @@ export default class Messaging extends Vue {
     }
     return false
   }
-
-  onSendMessage() {
-    this.thread.sendMessage(this.newMessage)
-    this.newMessage = ''
+  remove(bid) {
+    this.store.remove(bid)
+    this.bid = null
   }
 }
 </script>

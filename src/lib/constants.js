@@ -1,0 +1,4 @@
+export default class Constants {
+  static baseUrl = 'http://45.55.34.95/vapo/api'
+  static token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC8vYXV0aGVudGljYXRpb24vc2lnbkluIiwiaWF0IjoxNTMwMTExMzY4LCJleHAiOjE1NDU2NjMzNjgsIm5iZiI6MTUzMDExMTM2OCwianRpIjoiZFRXV09GdGFXaURBalVkMiJ9.2H67GqwpLDXx7ksD9TzeDs93uAPxDyPYey_BLGQLN-A'
+}
