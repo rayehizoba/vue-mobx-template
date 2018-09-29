@@ -5,17 +5,14 @@ export class Bid {
    * this bid must load its responses once it is created
    * @param {data from server} json 
    */
-  constructor(json, bidingApi, onRemoveBid) {
+  constructor(json, bidingApi) {
     this.bidingApi = bidingApi
     this.id = json.id
-    this.onRemoveBid = onRemoveBid
     this.updateFromJson(json)
     this.fetchResponses()
   }
 
   bidingApi
-
-  onRemoveBid
 
   /**
    * unique id of this bid, immutable.

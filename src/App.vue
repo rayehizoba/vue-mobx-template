@@ -1,21 +1,47 @@
 <template>
   <div id="app">
-    <Biding />
-    <Biding />
-    <Messaging />
+    <template v-if="store.profileStore.token" >
+      <Agency />
+      <Service />
+      <Deal />
+      <Biding />
+      <Document />
+      <Messaging />
+    </template>
+    <Auth />
+    <Profile />
   </div>
 </template>
 
 <script>
 import Messaging from './features/Messaging'
 import Biding from './features/Biding'
+import Document from './features/Document'
+import Deal from './features/Deal'
+import Agency from './features/Agency'
+import Auth from './features/Auth'
+import Profile from './features/Profile'
+import Service from './features/Service'
+import Vue from 'vue'
+import Component from 'vue-class-component'
+import { Observer } from 'mobx-vue'
+import store from './stores/RootStore'
 
-export default {
-  name: 'App',
+@Observer
+@Component({
   components: {
     Messaging,
-    Biding
+    Biding,
+    Document,
+    Deal,
+    Auth,
+    Profile,
+    Agency,
+    Service,
   }
+})
+export default class App extends Vue {
+  store = store
 }
 </script>
 
@@ -30,7 +56,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   display: grid;
-  grid-template-columns: repeat(3, 50vw);
+  grid-template-columns: repeat(8, 30vw);
   grid-gap: 30px;
   background: #EEE;
   overflow-x: auto;

@@ -1,15 +1,17 @@
-import {observable, action} from 'mobx'
-import messagingApi from '../api/Messaging';
-import { Thread } from './Thread';
+import {observable, action, when} from 'mobx'
+import messagingApi from '../api/Messaging'
+import { Thread } from './Thread'
+import { persist } from 'mobx-persist'
 
-export class MessagingStore {
+export default class MessagingStore {
 
-  constructor(messagingApi) {
-    this.messagingApi = messagingApi
-    this.fetchThreads()
+  constructor(rootStore) {
+    this.rootStore = rootStore
+    when(
+      () => this.notification.length,
+      () => console.log('New notification! ', this.notification)
+    )
   }
-
-  messagingApi
   
   /**
    * Loading state of store
@@ -24,8 +26,15 @@ export class MessagingStore {
   error = false
 
   /**
+   * store notification
+   */
+  @observable
+  notification = ''
+
+  /**
    * List of Thread observables
    */
+  @persist('list', Thread)
   @observable
   threads = []
 
@@ -34,11 +43,14 @@ export class MessagingStore {
    */
   @action
   async fetchThreads() {
-    this.loading = true
-    const { data: fetchedThreads, error } = await this.messagingApi.fetchThreads()
+    this.loading = 'Fetching threads'
+    const { data: fetchedThreads, error, message } = await messagingApi.fetchThreads()
     this.loading = false
     this.error = error
-    fetchedThreads.forEach(json => this.updateThreadFromServer(json))
+    this.notification = message
+    if (!error) {
+      fetchedThreads.forEach(json => this.updateThreadFromServer(json))
+    }
   }
 
   /**
@@ -55,6 +67,3 @@ export class MessagingStore {
     }
   }
 }
-
-const store = new MessagingStore(messagingApi)
-export default store

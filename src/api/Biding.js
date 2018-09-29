@@ -3,8 +3,12 @@ import Constants from '../lib/constants'
 
 export class BidingApi {
   static async fetchBids() {
-    const { data: response } = await axios.get(`${Constants.baseUrl}/bids/fetchAll`)
-    return response
+    try {
+      const { data: response } = await axios.get(`${Constants.baseUrl}/bids/fetchAll`)
+      return response
+    } catch(e) {
+      return e.response.data
+    }
   }
   static async fetchBidResponses(bidSlug) {
     const { data: response } = await axios({
@@ -25,14 +29,13 @@ export class BidingApi {
     });
     return response
   }
-  // static async sendMessage(query, threadSlug) {
-  //   const { data: response } = await axios({
-  //     method: 'post',
-  //     url: `${Constants.baseUrl}/messages/sendMessage`,
-  //     headers: { threadSlug },
-  //     data: query
-  //   });
-  //   return response
-  // }
+  static async sendBidRequest(data) {
+    const response = await axios({
+      method: 'post',
+      url: `${Constants.baseUrl}/bids/sendBid`,
+      data
+    });
+    return response
+  }
 }
 export default BidingApi

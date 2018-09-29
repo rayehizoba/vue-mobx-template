@@ -3,7 +3,19 @@ import Constants from '../lib/constants'
 
 export class MessagingApi {
   static async fetchThreads() {
-    const { data: response } = await axios.get(`${Constants.baseUrl}/messages/getThreads`)
+    try {
+      const { data: response } = await axios.get(`${Constants.baseUrl}/messages/getThreads`)
+      return response
+    } catch(e) {
+      return e.response.data
+    }
+  }
+  static async fetchThread(slug) {
+    const { data: response } = await axios({
+      method: 'get',
+      url: `${Constants.baseUrl}/messages/getThreads`,
+      params: { slug }
+    })
     return response
   }
   static async fetchMessages(threadSlug) {

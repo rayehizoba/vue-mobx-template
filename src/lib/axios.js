@@ -4,8 +4,7 @@ import Constants from './constants'
 const instance = axios.create({
   baseURL: Constants.baseURL,
   headers: {
-    'Content': 'application/json',
-    'Authorization': `bearer ${Constants.token}`
+    'Content-Type': 'application/json',
   }
 })
 

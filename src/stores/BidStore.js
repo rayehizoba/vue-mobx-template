@@ -1,15 +1,16 @@
-import {observable, action} from 'mobx'
+import {observable, action, when} from 'mobx'
 import bidingApi from '../api/Biding'
 import { Bid } from './Bid'
 
-export class BidStore {
+export default class BidStore {
 
-  constructor(bidingApi) {
-    this.bidingApi = bidingApi
-    this.fetchBids()
+  constructor(rootStore) {
+    this.rootStore = rootStore
+    when(
+      () => this.notification.length,
+      () => console.log('New notification! ', this.notification)
+    )
   }
-
-  bidingApi
   
   /**
    * loading state of store
@@ -24,6 +25,12 @@ export class BidStore {
   error = false
 
   /**
+   * latest notification message
+   */
+  @observable
+  notification = ''
+
+  /**
    * List of Bid observables
    */
   @observable
@@ -34,11 +41,14 @@ export class BidStore {
    */
   @action
   async fetchBids() {
-    this.loading = true
-    const { data: fetchedBids, error } = await this.bidingApi.fetchBids()
+    this.loading = 'Fetching bids'
+    const { data: fetchedBids, error, message } = await bidingApi.fetchBids()
     this.loading = false
     this.error = error
-    fetchedBids.forEach(json => this.updateBidFromServer(json))
+    this.notification = message
+    if (!error) {
+      fetchedBids.forEach(json => this.updateBidFromServer(json))
+    }
   }
 
   /**
@@ -56,25 +66,16 @@ export class BidStore {
   }
 
   /**
-   * sends a new bid request form to the backend server
-   */
-  @action
-  sendBidRequest() {}
-
-  /**
    * Remove this bid from the client and server
    */
   @action
   async remove(bid) {
     bid.loading = true
-    const { error, message } = await this.bidingApi.deleteBid(bid.slug)
+    const { error, message } = await bidingApi.deleteBid(bid.slug)
     bid.loading = false
     if (!error) {
-      this.error = message
+      this.notification = message
       this.bids.splice(this.bids.indexOf(bid), 1);
     }
   }
 }
-
-const store = new BidStore(bidingApi)
-export default store

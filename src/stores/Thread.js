@@ -1,5 +1,7 @@
-import {observable, action} from 'mobx'
-import { Message } from './Message';
+import {observable, action, useStrict} from 'mobx'
+import { Message } from './Message'
+import uuidv1 from 'uuid/v1'
+import { persist } from 'mobx-persist'
 
 export class Thread {
   /**
@@ -18,6 +20,8 @@ export class Thread {
   /**
    * unique id of this thread, immutable.
    */
+  @persist
+  @observable
   id = null
 
   /**
@@ -35,30 +39,38 @@ export class Thread {
   /**
    * last message in this thread
    */
+  // @persist
   @observable
   lastMessage
 
   /**
    * list of messages in this thread
    */
+  // @persist('list', Message)
   @observable
   messages = []
 
+  // @persist
   @observable
   sender
 
+  // @persist
   @observable
   receiver
 
+  // @persist
   @observable
   agency
 
+  @persist
   @observable
   createdAt
 
+  @persist
   @observable
   slug
 
+  @persist
   @observable
   canRespond = false
 
@@ -80,15 +92,18 @@ export class Thread {
    */
   async fetchMessages() {
     this.loading = true
-    const { data: fetchedMessages, error } = await this.messagingApi
-      .fetchMessages(this.slug)
+    const { data: fetchedMessages, error } = await this.messagingApi.fetchMessages(this.slug)
     this.loading = false
     this.error = error
-    this.canRespond = fetchedMessages.canRespond
-    for (var key in fetchedMessages) {
-      if (isFinite(parseInt(key))) {
-        const json = fetchedMessages[key]
-        this.updateMessageFromServer(json)
+
+    if (!error) {
+      this.canRespond = fetchedMessages.canRespond
+      this.messages.clear()
+      for (var key in fetchedMessages) {
+        if (isFinite(parseInt(key))) {
+          const json = fetchedMessages[key]
+          this.updateMessageFromServer(json)
+        }
       }
     }
   }
@@ -98,7 +113,7 @@ export class Thread {
    * only exists once. Might either construct a new message or update an existing one
    */
   updateMessageFromServer(json) {
-    let message = this.messages.find(m => m.id === json.id);
+    let message = this.messages.find(m => m.id === json.id)
     if (!message) {
       message = new Message(json)
       this.messages.unshift(message)
@@ -109,15 +124,31 @@ export class Thread {
 
   @action
   async sendMessage(message, type = 'text') {
-    const query = {
+    const model = {
       message,
       type,
       senderId: this.sender.id,
       agencyId: this.agency.id,
+      id: uuidv1(),
+      isSending: true
     }
-    this.updateMessageFromServer(query)
-    const { data: sentMessage } = await this.messagingApi.sendMessage(query, this.slug)
-    this.updateMessageFromServer(sentMessage)
+    this.updateMessageFromServer(model)
+    const { data: sentMessage } = await this.messagingApi.sendMessage(model, this.slug)
+    const updatedModel = { ...sentMessage, ...model, isSending: false }
+    this.updateMessageFromServer(updatedModel)
+    this.refresh()
+  }
+
+  @action
+  async refresh() {
+    this.loading = true
+    const { data: fetchedThreads, error, message } = await this.messagingApi.fetchThread(this.slug)
+    this.loading = false
+    if (error) {
+      this.error = message
+    } else {
+      this.updateFromJson(fetchedThreads.pop())
+    }
   }
   
 }

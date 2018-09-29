@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h5 class="sticky-header" >Messaging Store</h5>
-  
-    <button @click="store.fetchThreads()" >Fetch threads</button>
+    <h5 class="sticky-header" >Deal Store</h5>
+    <button @click="store.fetchDeals()" >Fetch deals</button>
     <vue-json-pretty
       :data="JSON.parse(stringify(store))"
       showLength
@@ -11,19 +10,13 @@
       selectableType="tree"
       :pathSelectable="pathSelectable"
     />
-
-    <div v-if="!!thread" >
+  
+    <div v-if="!!deal" >
       <hr>
-      <p>Selected Thread</p>
-      <button @click="thread.refresh()" >Refresh thread</button>
-      <button @click="thread.fetchMessages()" >Refresh messages</button>
-      <input
-        v-model="newMessage"
-        placeholder="Press enter to send msg"
-        @keyup.enter="onSendMessage()"
-      />
+      <p>Selected Deal</p>
+      <button @click="onRemove(deal)" >Remove deal</button>
       <vue-json-pretty
-        :data="JSON.parse(stringify(thread))"
+        :data="JSON.parse(stringify(deal))"
         showLength
         :deep="1"
       />
@@ -45,30 +38,27 @@ import stringify from 'json-stringify-safe'
     VueJsonPretty
   }
 })
-export default class Messaging extends Vue {
+export default class Deal extends Vue {
   stringify = stringify
-  store = store.messagingStore
-  thread = null
-  newMessage = ''
+  store = store.dealStore
+  deal = null
 
   handleClick(path) {
     let pathSplit = path.split('[')
     pathSplit = pathSplit[1].split(']')
-    const threadIndex = parseInt(pathSplit[0])
-    this.thread = this.store.threads[threadIndex]
+    const dealIndex = parseInt(pathSplit[0])
+    this.deal = this.store.deals[dealIndex]
   }
-
-  pathSelectable(path, data) {
+  pathSelectable(path) {
     const pathSplit = path.split('.')
     if (pathSplit.length === 2 && pathSplit[1].includes('[')) {
       return true
     }
     return false
   }
-
-  onSendMessage() {
-    this.thread.sendMessage(this.newMessage)
-    this.newMessage = ''
+  onRemove(deal) {
+    this.store.remove(deal)
+    this.deal = null
   }
 }
 </script>

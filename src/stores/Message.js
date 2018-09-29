@@ -1,4 +1,5 @@
-import {observable, action} from 'mobx'
+import {observable} from 'mobx'
+import { persist } from 'mobx-persist'
 
 export class Message {
   constructor(json) {
@@ -7,16 +8,21 @@ export class Message {
   }
 
   /**
-   * unique id of this thread, immutable.
+   * unique id of this message, immutable.
    */
+  @persist
+  @observable
   id = null
 
+  @persist
   @observable
   isRead
   
+  @persist
   @observable
   message
 
+  @persist
   @observable
   type
 
@@ -30,14 +36,11 @@ export class Message {
   /**
    * Update this message with information from the server
    */
-  updateFromJson(json) {
+  updateFromJson(json) {    
     this.isRead = json.isRead | false
+    this.isSending = !!json.isSending
     this.message = json.message
+    this.senderId = json.senderId
     this.type = json.type
-    if (json.id) {
-      this.isSending = false
-    } else {
-      this.isSending = true
-    }
   }
 }
