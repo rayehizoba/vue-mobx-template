@@ -8,7 +8,7 @@ export default class AgencySearchStore {
     this.rootStore = rootStore
     const a = autorun(() => {
       if (this.services.length === 0) return
-      if (this.location.length === 0) return
+      // if (this.location.length === 0) return
       this.onSearch()
     })
   }

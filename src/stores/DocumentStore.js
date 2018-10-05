@@ -84,16 +84,19 @@ export default class DocumentStore {
   @action
   async remove(document) {
     document.loading = 'Removing document...'
+    this.rootStore.uiStore.setNotification('Removing document...')
     const { error, message } = await documentApi.deleteDocument(document.slug)
     document.loading = false
     if (!error) {
       this.notification = message
-      this.documents.splice(this.documents.indexOf(document), 1);
+      this.rootStore.uiStore.setNotification(message)
+      this.documents.splice(this.documents.indexOf(document), 1)
     }
   }
 
   @action
   async uploadDocument(document, type) {
+    this.rootStore.uiStore.setNotification('Uploading document file...')
     this.loading = 'Uploading document file'
     const formData = new FormData()
     formData.append('types[]', type)
@@ -103,6 +106,7 @@ export default class DocumentStore {
     this.error = error
     this.notification = message
     if (!error) {
+      this.rootStore.uiStore.setNotification(message)
       fetchedDocs.forEach(json => this.updateDocFromServer(json))
     }
   }

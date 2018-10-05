@@ -262,12 +262,3 @@ export default class Auth extends Vue {
   profileUpdateForm = store.profileUpdateForm
 }
 </script>
-
-<style>
-.form {
-  background-color: #EEE;
-  padding: 1px 15px 15px;
-  margin-top: 15px;
-  border-radius: 5px;
-}
-</style>

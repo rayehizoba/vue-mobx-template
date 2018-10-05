@@ -48,16 +48,19 @@ export default class SignupForm extends Form {
   state = null
 
   @action
-  async submit() {
+  async submit(next) {
     if (this.loading || !this.isValid) return false
     this.loading = true
     console.log('Submitting signup form ' + this.value)
     const { error = false, message, data } = await api.signup(this.value)
     this.loading = false
     this.error = error
-    this.notification = Array.isArray(message) ? flatten(message) : message
+    this.notification = Array.isArray(message) ? flatten(message) : [message]
+    this.rootStore.uiStore.setNotification(this.notification[0])
     if (!this.error) {
       profileStore.updateFromJson(data)
+      this.reset()
+      next()
     }
   }
 }

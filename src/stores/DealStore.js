@@ -1,11 +1,83 @@
-import {observable, action, when} from 'mobx'
+import {observable, action, when, computed, autorun} from 'mobx'
 import api from '../api/Deal'
 import { Deal } from './Deal'
+import Form from './FormStore'
+
+class Filter extends Form {
+  constructor(parentStore) {
+    super()
+    this.parentStore = parentStore
+    autorun(() => {
+      if ( this.services.length ) {
+        this.parentStore.fetchDeals()
+      }
+      if (!!this.minPrice && !!this.maxPrice) {
+        this.parentStore.fetchDeals()
+      }
+      if (!this.isActive) {
+        this.parentStore.fetchDeals()
+      }
+    }, { delay: 500 })
+  }
+
+  @observable
+  services = []
+
+  @observable
+  minPrice = ''
+
+  @observable
+  maxPrice = ''
+
+  /**
+   * adds a service id to this.services
+   * ensures that this.services contains no duplicates
+   */
+  @action
+  setService(id) {
+    if (this.services.indexOf(id) < 0) {
+      this.services.push(id)
+    } else {
+      this.services.splice( this.services.indexOf(id), 1 )
+    }
+  }
+
+  @computed
+  get isActive() {
+    if (this.services.length > 0) {
+      return true
+    }
+    if (this.minPrice.length && this.maxPrice.length) {
+      return true
+    }
+    return false
+  }
+
+  @computed
+  get query() {
+    const q = {
+      services: this.services.slice(),
+      price: [this.minPrice, this.maxPrice]
+    }
+    if (!this.minPrice.length || !this.maxPrice.length) {
+      delete q.price
+    }
+    return q
+  }
+
+  @action
+  clear() {
+    this.services.clear()
+    this.minPrice = ''
+    this.maxPrice = ''
+  }
+}
 
 export default class DealStore {
-
+  filter
   constructor(rootStore) {
     this.rootStore = rootStore
+    this.filter = new Filter(this)
     when(
       () => this.notification.length,
       () => console.log('New notification! ', this.notification)
@@ -36,11 +108,27 @@ export default class DealStore {
   @observable
   deals = []
 
+  @action
+  async filterDeals() {
+    this.loading = 'Filtering deals'
+    const { data: fetchedDeals, error, message } = await api.filterDeals(this.filter.query)
+    this.loading = false
+    this.error = error
+    this.notification = message
+    if (!error) {
+      this.deals.clear()
+      fetchedDeals.forEach(json => this.updateDealFromServer(json))
+    }
+  }
+
   /**
    * Fetch deals from backend service
    */
   @action
   async fetchDeals() {
+    if (this.filter.isActive) {
+      return this.filterDeals()
+    }
     this.loading = 'Fetching deals'
     const { data: fetchedDeals, error, message } = await api.fetchDeals()
     this.loading = false

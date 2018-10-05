@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <template v-if="store.profileStore.token" >
+      <Deal />
+      <!-- <Biding />
       <Agency />
       <Service />
-      <Deal />
-      <Biding />
       <Document />
-      <Messaging />
+      <Messaging /> -->
     </template>
-    <Auth />
-    <Profile />
+    <!-- <Auth />
+    <Profile /> -->
   </div>
 </template>
 
@@ -81,5 +81,11 @@ html, body {
 hr {
   border: none;
   border-bottom: #EEE dotted 1px;
+}
+.form {
+  background-color: #EEE;
+  padding: 1px 15px 15px;
+  margin-top: 15px;
+  border-radius: 5px;
 }
 </style>

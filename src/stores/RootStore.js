@@ -12,6 +12,7 @@ import SignupForm from './SignupForm'
 import ServiceStore from './ServiceStore'
 import AgencySearchStore from './AgencySearchStore'
 import { create } from 'mobx-persist'
+import UiStore from './UiStore'
 
 const hydrate = create({
   /**
@@ -23,6 +24,7 @@ const hydrate = create({
 
 class RootStore {
   constructor() {
+    this.uiStore = new UiStore(this)
     this.signupForm = new SignupForm(this, {
       address: '7 awoyaya street, lekki',
       country: 'Nigeria',
@@ -40,6 +42,9 @@ class RootStore {
     })
     this.forgotPasswordForm = new ForgotPasswordForm(this, { email: 'raymond@findworka.com' })
     this.profileUpdateForm = new ProfileUpdateForm(this)
+    hydrate('ProfileUpdateForm', this.profileUpdateForm).then(
+      (x) => console.log('profileUpdateForm hydrated', x)
+    )
     this.agencyStore = new AgencyStore(this)
     this.dealStore = new DealStore(this)
     this.bidStore = new BidStore(this)

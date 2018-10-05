@@ -10,6 +10,21 @@ export class DealApi {
       return e.response.data
     }
   }
+  static async filterDeals({ services, prices }) {
+    let params = '?'
+    if (services && services.length) {
+      params += 'services=' + services.join(',')
+    }
+    if (prices && prices.length === 2) {
+      params += 'prices=' + prices.join(',')
+    }
+    try {
+      const { data: response } = await axios.get(`${Constants.baseUrl}/deals/filter${params}`)
+      return response
+    } catch(e) {
+      return e.response.data
+    }
+  }
   static async deleteDeal(slug) {
     const { data: response } = await axios({
       method: 'get',

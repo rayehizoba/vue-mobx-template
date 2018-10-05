@@ -1,4 +1,6 @@
-import {observable, action} from 'mobx'
+import {observable} from 'mobx'
+import { Agency } from './Agency'
+import agencyApi from '../api/Agency'
 
 export class Deal {
   constructor(json, dealApi) {
@@ -83,8 +85,8 @@ export class Deal {
   /**
    * Update this deal with information from the server
    */
-  updateFromJson(json) {    
-    this.agency = json.agency
+  updateFromJson(json) {
+    this.agency = new Agency(json.agency, agencyApi)
     this.agencyId = json.agencyId
     this.amount = json.amount
     this.arrivalDate = json.arrivalDate

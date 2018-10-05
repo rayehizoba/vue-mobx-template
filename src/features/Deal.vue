@@ -2,6 +2,31 @@
   <div>
     <h5 class="sticky-header" >Deal Store</h5>
     <button @click="store.fetchDeals()" >Fetch deals</button>
+    <div class="form">
+      <h5>Filter deals</h5>
+      <h5 v-if="store.filter.isActive" >(ACTIVE)</h5>
+      <button
+        v-for="service in serviceStore.services"
+        :class="{ selected : store.filter.services.includes(service.id) }"
+        :key="service.name"
+        @click="store.filter.setService(service.id)"
+      >{{service.name}}</button>
+      <input
+        type="number"
+        placeholder="Min price"
+        name="minPrice"
+        :value="store.filter.minPrice"
+        @keyup="(evt) => {store.filter.set(evt.target.name, evt.target.value)}"
+      />
+      <input
+        type="number"
+        placeholder="Max price"
+        name="maxPrice"
+        :value="store.filter.maxPrice"
+        @keyup="(evt) => {store.filter.set(evt.target.name, evt.target.value)}"
+      />
+      <button @click="store.filter.clear()" >clear</button>
+    </div>
     <vue-json-pretty
       :data="JSON.parse(stringify(store))"
       showLength
@@ -41,6 +66,7 @@ import stringify from 'json-stringify-safe'
 export default class Deal extends Vue {
   stringify = stringify
   store = store.dealStore
+  serviceStore = store.serviceStore
   deal = null
 
   handleClick(path) {
@@ -64,5 +90,8 @@ export default class Deal extends Vue {
 </script>
 
 <style>
-
+button.selected {
+  background-color: blue;
+  color: white;
+}
 </style>
