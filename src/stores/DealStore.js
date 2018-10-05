@@ -116,8 +116,8 @@ export default class DealStore {
     this.error = error
     this.notification = message
     if (!error) {
-      this.deals.clear()
-      fetchedDeals.forEach(json => this.updateDealFromServer(json))
+      const newDeals = fetchedDeals.map(json => new Deal(json, api))
+      this.deals.replace(newDeals)
     }
   }
 
