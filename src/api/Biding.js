@@ -11,31 +11,43 @@ export class BidingApi {
     }
   }
   static async fetchBidResponses(bidSlug) {
-    const { data: response } = await axios({
-      method: 'get',
-      url: `${Constants.baseUrl}/bids/fetchOne`,
-      params: {
-        slug: bidSlug,
-        getResponses: true
-      }
-    });
-    return response
+    try {
+      const { data: response } = await axios({
+        method: 'get',
+        url: `${Constants.baseUrl}/bids/fetchOne`,
+        params: {
+          slug: bidSlug,
+          getResponses: true
+        }
+      })
+      return response
+    } catch(e) {
+      return e.response.data
+    }
   }
   static async deleteBid(bidSlug) {
-    const { data: response } = await axios({
-      method: 'get',
-      url: `${Constants.baseUrl}/bids/delete`,
-      params: { slug: bidSlug }
-    });
-    return response
+    try {
+      const { data: response } = await axios({
+        method: 'get',
+        url: `${Constants.baseUrl}/bids/delete`,
+        params: { slug: bidSlug }
+      })
+      return response
+    } catch(e) {
+      return e.response.data
+    }
   }
   static async sendBidRequest(data) {
-    const response = await axios({
-      method: 'post',
-      url: `${Constants.baseUrl}/bids/sendBid`,
-      data
-    });
-    return response
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${Constants.baseUrl}/bids/sendBid`,
+        data
+      })
+      return response
+    } catch(e) {
+      return e.response.data
+    }
   }
 }
 export default BidingApi

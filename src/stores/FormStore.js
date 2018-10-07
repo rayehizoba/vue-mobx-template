@@ -40,7 +40,6 @@ export default class Form {
 
   @action
   reset() {
-    this.loading = false
     Object.entries(this.value).forEach(
       ([key, _]) => this[key] = null
     )

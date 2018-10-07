@@ -13,6 +13,7 @@ import ServiceStore from './ServiceStore'
 import AgencySearchStore from './AgencySearchStore'
 import { create } from 'mobx-persist'
 import UiStore from './UiStore'
+import NewDealForm from './NewDealForm'
 
 const hydrate = create({
   /**
@@ -46,6 +47,7 @@ class RootStore {
       (x) => console.log('profileUpdateForm hydrated', x)
     )
     this.agencyStore = new AgencyStore(this)
+    this.newDealForm = new NewDealForm(this)
     this.dealStore = new DealStore(this)
     this.bidStore = new BidStore(this)
     this.bidRequestForm = new BidRequestForm(this)

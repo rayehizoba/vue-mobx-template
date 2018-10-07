@@ -1,4 +1,4 @@
-import {observable, action, when} from 'mobx'
+import {observable, action, when, computed} from 'mobx'
 import axios from '../lib/axios'
 import { persist } from 'mobx-persist'
 
@@ -101,5 +101,11 @@ export default class ProfileStore {
     this.createdAt = null
     this.token = null
     this.agency = null
+  }
+
+  @computed
+  get isAgency() {
+    if (this.type === 'agency') return true
+    return false
   }
 }

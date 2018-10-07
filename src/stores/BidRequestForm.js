@@ -90,10 +90,8 @@ export default class BidRequestForm extends Form {
     const { data, error, message } = await bidingApi.sendBidRequest(this.value)
     console.log(data, error, message)
     this.loading = false
-    if (error) {
-      this.notification = message
-    } else {
-      this.notification = message
+    this.notification = message
+    if (!error) {
       this.rootStore.bidStore.fetchBids()
     }
   }

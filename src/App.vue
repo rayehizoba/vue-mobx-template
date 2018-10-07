@@ -1,15 +1,15 @@
 <template>
   <div id="app">
     <template v-if="store.profileStore.token" >
-      <Deal />
-      <!-- <Biding />
-      <Agency />
+      <!-- <Deal /> -->
+      <Biding />
+      <!-- <Agency />
       <Service />
       <Document />
       <Messaging /> -->
     </template>
-    <!-- <Auth />
-    <Profile /> -->
+    <Auth />
+    <Profile />
   </div>
 </template>
 

@@ -66,7 +66,6 @@ export default class ProfileUpdateForm extends Form {
     this.loading = false
     this.error = error
     this.notification = Array.isArray(message) ? flatten(message) : [message]
-    console.log(error, this.notification, data)
     this.rootStore.uiStore.setNotification(this.notification[0])
     if (!error) {
       this.rootStore.profileStore.updateFromJson(data)

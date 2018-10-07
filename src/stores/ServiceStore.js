@@ -46,4 +46,14 @@ export default class ServiceStore {
       service.updateFromJson(json)
     }
   }
+
+  /**
+   * Returns services that pass test: s => x.includes(s.name)
+   * @param {list of services to find: string[]} serviceNames 
+   */
+  findAll(serviceNames) {
+    return this.services.filter(s => {
+      return serviceNames.includes(s.name.split(' ').join('-'))
+    })
+  }
 }

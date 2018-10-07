@@ -26,7 +26,6 @@
 
     <div class="bid-request-form">
       <h5>Bid request form</h5>
-      <!-- <pre>{{bidRequestForm}}</pre> -->
       <input
         type="text"
         placeholder="userId"
