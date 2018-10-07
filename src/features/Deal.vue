@@ -210,10 +210,3 @@ export default class Deal extends Vue {
   }
 }
 </script>
-
-<style>
-button.selected {
-  background-color: blue;
-  color: white;
-}
-</style>

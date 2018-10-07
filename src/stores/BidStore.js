@@ -58,7 +58,7 @@ export default class BidStore {
   updateBidFromServer(json) {
     let bid = this.bids.find(b => b.id === json.id);
     if (!bid) {
-      bid = new Bid(json, bidingApi)
+      bid = new Bid(json)
       this.bids.push(bid)
     } else {
       bid.updateFromJson(json)

@@ -14,6 +14,7 @@ import AgencySearchStore from './AgencySearchStore'
 import { create } from 'mobx-persist'
 import UiStore from './UiStore'
 import NewDealForm from './NewDealForm'
+import BidResponseForm from './BidResponseForm'
 
 const hydrate = create({
   /**
@@ -51,6 +52,7 @@ class RootStore {
     this.dealStore = new DealStore(this)
     this.bidStore = new BidStore(this)
     this.bidRequestForm = new BidRequestForm(this)
+    this.bidResponseForm = new BidResponseForm(this)
     this.documentStore = new DocumentStore(this)
     this.profileStore = new ProfileStore(this)
     this.serviceStore = new ServiceStore(this)

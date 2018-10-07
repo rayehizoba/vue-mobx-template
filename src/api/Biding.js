@@ -44,7 +44,19 @@ export class BidingApi {
         url: `${Constants.baseUrl}/bids/sendBid`,
         data
       })
-      return response
+      return response.data
+    } catch(e) {
+      return e.response.data
+    }
+  }
+  static async sendBidResponse(data) {
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${Constants.baseUrl}/bids/sendResponse`,
+        data
+      })
+      return response.data
     } catch(e) {
       return e.response.data
     }

@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <template v-if="store.profileStore.token" >
-      <!-- <Deal /> -->
+      <Deal />
       <Biding />
-      <!-- <Agency />
+      <Agency />
       <Service />
       <Document />
-      <Messaging /> -->
+      <Messaging />
     </template>
     <Auth />
     <Profile />
@@ -87,5 +87,9 @@ hr {
   padding: 1px 15px 15px;
   margin-top: 15px;
   border-radius: 5px;
+}
+button.selected {
+  background-color: blue;
+  color: white;
 }
 </style>

@@ -83,10 +83,3 @@ export default class Agency extends Vue {
   }
 }
 </script>
-
-<style>
-button.selected {
-  background-color: blue;
-  color: white;
-}
-</style>

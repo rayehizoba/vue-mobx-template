@@ -1,18 +1,16 @@
 import {observable, action} from 'mobx'
+import api from '../api/Biding'
 
 export class Bid {
   /**
    * this bid must load its responses once it is created
    * @param {data from server} json 
    */
-  constructor(json, bidingApi) {
-    this.bidingApi = bidingApi
+  constructor(json) {
     this.id = json.id
     this.updateFromJson(json)
     this.fetchResponses()
   }
-
-  bidingApi
 
   /**
    * unique id of this bid, immutable.
@@ -30,13 +28,6 @@ export class Bid {
    */
   @observable
   error = false
-
-  /**
-   * json data from server
-   * TODO: split this aggregated data into atomic data points
-   */
-  @observable
-  json = {}
 
   @observable
   userId = null
@@ -57,7 +48,43 @@ export class Bid {
   currency = null
 
   @observable
-  slug = null
+  flightTo = null
+
+  @observable
+  flightFrom = null
+
+  @observable
+  flightType = null
+
+  @observable
+  flightDeparture = null
+
+  @observable
+  hotelLocation = null
+
+  @observable
+  hotelStar = null
+
+  @observable
+  tripDuration = null
+
+  @observable
+  adultTravellers = null
+
+  @observable
+  childTravellers = null
+
+  @observable
+  totalTravellers = null
+
+  @observable
+  cabType = null
+
+  @observable
+  tourLanguages = null
+
+  @observable
+  createdAt = null
 
   /**
    * Update this bid with information from the server
@@ -69,7 +96,20 @@ export class Bid {
     this.budget = json.budget
     this.currency = json.currency
     this.slug = json.slug
-    this.json = json
+    this.flightTo = json.flightTo
+    this.flightFrom = json.flightFrom
+    this.flightType = json.flightType
+    this.flightDeparture = json.flightDeparture
+    this.hotelLocation = json.hotelLocation
+    this.hotelStar = json.hotelStar
+    this.tripDuration = json.tripDuration
+    this.adultTravellers = json.adultTravellers
+    this.childTravellers = json.childTravellers
+    this.totalTravellers = json.totalTravellers
+    this.cabType = json.cabType
+    this.tourLanguages = json.tourLanguages
+    this.createdAt = json.created_at
+    this.responses = json.responses
   }
 
   /**
@@ -78,10 +118,12 @@ export class Bid {
    */
   async fetchResponses() {
     this.loading = true
-    const { data: fetchedResponses, error } = await this.bidingApi.fetchBidResponses(this.slug)
+    const { data, error } = await api.fetchBidResponses(this.slug)
     this.loading = false
     this.error = error
-    this.responses = fetchedResponses
+    if (!error) {
+      this.updateFromJson(data)
+    }
   }
 
   @action

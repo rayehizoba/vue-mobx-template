@@ -2,6 +2,7 @@ import {observable, action} from 'mobx'
 import validate from 'mobx-form-validate'
 import bidingApi from '../api/Biding'
 import Form from './FormStore'
+import { flatten } from 'rambda'
 
 export default class BidRequestForm extends Form {
   constructor(rootStore, data) {
@@ -88,11 +89,25 @@ export default class BidRequestForm extends Form {
     this.loading = true
     console.log('Submitting ', this.value)
     const { data, error, message } = await bidingApi.sendBidRequest(this.value)
-    console.log(data, error, message)
     this.loading = false
-    this.notification = message
+    this.error = error
+    this.notification = Array.isArray(message) ? flatten(message) : [message]
+    this.rootStore.uiStore.setNotification(this.notification[0])
     if (!error) {
-      this.rootStore.bidStore.fetchBids()
+      this.rootStore.bidStore.updateBidFromServer(data)
+    }
+  }
+
+  /**
+   * adds a service id to this.services
+   * ensures that this.services contains no duplicates
+   */
+  @action
+  setService(id) {
+    if (this.services.indexOf(id) < 0) {
+      this.services.push(id)
+    } else {
+      this.services.splice( this.services.indexOf(id), 1 )
     }
   }
 }

@@ -95,6 +95,7 @@ export default class NewDealForm extends Form {
       const { data, error, message } = response
       console.log(data, error, message)
       this.loading = false
+      this.error = error
       this.notification = Array.isArray(message) ? flatten(message) : [message]
       this.rootStore.uiStore.setNotification(this.notification[0])
       if (!error) {

@@ -20,12 +20,97 @@
       <vue-json-pretty
         :data="JSON.parse(stringify(bid))"
         showLength
-        :deep="1"
+        :deep="0"
       />
+      <br>
+      <vue-json-pretty
+        :data="JSON.parse(stringify(bidResponseForm))"
+        showLength
+        :deep="0"
+      />
+      <div class="form">
+        <h5>Bid response form</h5>
+        <button
+          v-for="service in serviceStore.services"
+          :class="{ selected : bidResponseForm.services.includes(service.id) }"
+          :key="service.name"
+          @click="bidResponseForm.setService(service.id)"
+        >{{service.name}}</button>
+        <small>{{bidResponseForm.validateErrorServices}}</small>
+        <br>
+        <input
+          type="text"
+          placeholder="userId"
+          name="userId"
+          :value="bidResponseForm.userId"
+          @keyup="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}"
+        />
+        <small>{{bidResponseForm.validateErrorUserId}}</small>
+        <br>
+        <input
+          type="text"
+          placeholder="agencyId"
+          name="agencyId"
+          :value="bidResponseForm.agencyId"
+          @keyup="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}"
+        />
+        <small>{{bidResponseForm.validateErrorAgencyId}}</small>
+        <br>
+        <input
+          type="text"
+          placeholder="bidId"
+          name="bidId"
+          :value="bidResponseForm.bidId"
+          @keyup="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}"
+        />
+        <small>{{bidResponseForm.validateErrorBidId}}</small>
+        <br>
+        <input
+          type="text"
+          placeholder="message"
+          name="message"
+          :value="bidResponseForm.message"
+          @keyup="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}"
+        />
+        <small>{{bidResponseForm.validateErrorMessage}}</small>
+        <br>
+        <input
+          type="number"
+          placeholder="budget"
+          name="budget"
+          :value="bidResponseForm.budget"
+          @keyup="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}"
+        />
+        <small>{{bidResponseForm.validateErrorBudget}}</small>
+        <br>
+        <select name="currency" :value="bidResponseForm.currency" @change="(evt) => {bidResponseForm.set(evt.target.name, evt.target.value)}" >
+          <option value="" disabled >Choose currency</option>
+          <option value="USD">US Dollars</option>
+          <option value="NGN">Naira</option>
+        </select>
+        <small>{{bidResponseForm.validateErrorCurrency}}</small>
+        <br>
+
+        <button @click="submitBidResponseForm">submit</button>
+      </div>
     </div>
 
-    <div class="bid-request-form">
+    <hr>
+
+    <vue-json-pretty
+      :data="JSON.parse(stringify(bidRequestForm))"
+      showLength
+      :deep="0"
+    />
+    <div class="form">
       <h5>Bid request form</h5>
+      <button
+        v-for="service in serviceStore.services"
+        :class="{ selected : bidRequestForm.services.includes(service.id) }"
+        :key="service.name"
+        @click="bidRequestForm.setService(service.id)"
+      >{{service.name}}</button>
+      <small>{{bidRequestForm.validateErrorServices}}</small>
       <input
         type="text"
         placeholder="userId"
@@ -199,6 +284,8 @@ export default class Biding extends Vue {
   stringify = stringify
   store = store.bidStore
   bidRequestForm = store.bidRequestForm
+  bidResponseForm = store.bidResponseForm
+  serviceStore = store.serviceStore
   bid = null
 
   onTreeNodeSelection(path) {
@@ -206,6 +293,10 @@ export default class Biding extends Vue {
     pathSplit = pathSplit[1].split(']')
     const threadIndex = parseInt(pathSplit[0])
     this.bid = this.store.bids[threadIndex]
+    this.bidResponseForm.setAll({
+      userId: this.bid.userId,
+      bidId: this.bid.id
+    })
   }
   pathSelectable(path, data) {
     const pathSplit = path.split('.')
@@ -218,14 +309,9 @@ export default class Biding extends Vue {
     this.store.remove(bid)
     this.bid = null
   }
+  submitBidResponseForm() {
+    this.bidResponseForm.submit(this.bid.fetchResponses)
+  }
 }
 </script>
 
-<style>
-.bid-request-form {
-  background-color: #EEE;
-  padding: 1px 15px 15px;
-  margin-top: 15px;
-  border-radius: 5px;
-}
-</style>
